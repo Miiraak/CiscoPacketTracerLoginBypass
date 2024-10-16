@@ -1,6 +1,8 @@
 # PTLoginBypass
 ## Description
-A simple batch file for bypassing the login prompt of Cisco Packet Tracer 8.2.2. 
+A simple batch file for bypassing the login prompt of Cisco Packet Tracer 8.2.2. <br>
+I've used a stupid method that consist to add an outbound firewall rule to block the Cisco Packet Tracer internet communication... <br>
+Packed in a little batch file for easy uses. 
 
 ## Features
 - **Login Bypass**: Bypass the login prompt.
