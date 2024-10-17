@@ -12,6 +12,8 @@ if %errorLevel% NEQ 0 (
 set app_name=ByPass Cisco Packet Tracer Login
 set app_path="C:\Program Files\Cisco Packet Tracer 8.2.2\bin\PacketTracer.exe"
 
+echo ___ Packet Tracer Login bypass ___
+echo.
 echo Choose an option :
 echo 1. Enable login bypass.
 echo 2. Remove login bypass.
