@@ -42,7 +42,7 @@ Contributions are welcome! To contribute to this project, please follow these st
 If you encounter any issues or have suggestions for improving the project, please use the [GitHub issue tracker](https://github.com/Miiraak/PTLoginBypass/issues).
 
 ## License
-This project is licensed under the [MIT]. See the [LICENSE](./LICENSE) file for more details.
+This project is licensed under the MIT. See the [LICENSE](./LICENSE) file for more details.
 
 ## Authors
 - [**Miiraak**](https://github.com/your-username) - *Lead Developer*
