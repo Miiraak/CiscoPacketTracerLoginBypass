@@ -18,7 +18,7 @@ Packed in a little batch file for easy uses.
 Before running the project, make sure you have the following installed:
 
 - [Windows 10/11](https://www.microsoft.com/windows/)
-- [Cisco Packet Tracer 8.2.2](https://www.packettracernetwork.com/download/download-packet-tracer.html)
+- Installed [Cisco Packet Tracer 8.2.2](https://www.computernetworkingnotes.com/ccna-study-guide/download-packet-tracer-for-windows-and-linux.html)
 - Windows Firewall - Enabled
 
 ## Usage
