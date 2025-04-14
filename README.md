@@ -7,7 +7,8 @@ Packed in a little batch file for easy uses.
 ## Features
 - **Login Bypass**: Bypass the login prompt.
 - **On/Off**: Simply enable and disable the Bypass.
-- **Admin-Request**: Auto-Elevated demand if not launch as adminsitrator. 
+- **Admin-Request**: Auto-Elevated demand if not launch as adminsitrator.
+- **User/Computer install**: Handle user/computer installation of packet tracer.
 
 ### Features in development
 |*Label*|*Desc.*|
