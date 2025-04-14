@@ -8,7 +8,7 @@ Packed in a little batch file for easy uses.
 - **Login Bypass**: Bypass the login prompt.
 - **On/Off**: Simply enable and disable the Bypass.
 - **Admin-Request**: Auto-Elevated demand if not launch as adminsitrator.
-- **User/Computer install**: Handle user/computer installation of packet tracer.
+- **User/Computer install**: Handle User/Computer installation of packet tracer.
 
 ### Features in development
 |*Label*|*Desc.*|
@@ -19,7 +19,7 @@ Packed in a little batch file for easy uses.
 Before running the project, make sure you have the following installed:
 
 - [Windows 10/11](https://www.microsoft.com/windows/)
-- Installed [Cisco Packet Tracer 8.2.2](https://www.computernetworkingnotes.com/ccna-study-guide/download-packet-tracer-for-windows-and-linux.html)
+- [Cisco Packet Tracer 8.2.2](https://www.computernetworkingnotes.com/ccna-study-guide/download-packet-tracer-for-windows-and-linux.html)
 - Windows Firewall - Enabled
 
 ## Usage
