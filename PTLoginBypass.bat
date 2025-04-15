@@ -10,8 +10,18 @@ if %errorLevel% NEQ 0 (
 
 :start
 set app_name=ByPass Cisco Packet Tracer Login
-set app_path="C:\Program Files\Cisco Packet Tracer 8.2.2\bin\PacketTracer.exe"
+set ShortcutPaths="C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Cisco Packet Tracer\Cisco Packet Tracer.lnk";"%APPDATA%\Microsoft\Windows\Start Menu\Programs\Cisco Packet Tracer\Cisco Packet Tracer.lnk"
+set FinalTargetPath=""
 
+for %%p in (%ShortcutPaths%) do (
+    for /f "delims=" %%i in ('powershell -NoProfile -Command "(New-Object -ComObject WScript.Shell).CreateShortcut('%%~p').TargetPath"') do set "FinalTargetPath=%%i"
+
+    if exist "%FinalTargetPath%" (
+        goto :fin
+    )
+)
+
+:fin
 echo ___ Packet Tracer Login bypass ___
 echo.
 echo Choose an option :
@@ -21,7 +31,7 @@ set /p choice=Your choice :
 
 if "%choice%"=="1" (
     	echo Bypass activation...
-    	powershell -Command "New-NetFirewallRule -DisplayName '%app_name%' -Program '%app_path%' -Action Block -Direction Outbound"
+    	powershell -Command "New-NetFirewallRule -DisplayName '%app_name%' -Program '%FinalTargetPath%' -Action Block -Direction Outbound"
     	echo Bypass enabled for Cisco Packet Tracer.
 ) else if "%choice%"=="2" (
     	echo Bypass removal...
@@ -31,7 +41,7 @@ if "%choice%"=="1" (
 	cls
     	echo Invalid choice, please enter 1 or 2.
 	echo.
-	goto start
+	goto :fin
 )
 
 pause
