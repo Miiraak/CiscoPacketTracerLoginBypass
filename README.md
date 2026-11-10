@@ -10,22 +10,23 @@ Packed in a little batch file for easy uses.
 - **Admin-Request**: Auto-Elevated demand if not launch as adminsitrator.
 - **User/Computer install**: Handle User/Computer installation of packet tracer.
 - **Support multi version**: Work on different version of CPT _(Tested on v8.2.2, v9.0.0)_
+- **Automatic Windows language detection (English/Italian)**
+- **Automatic Operating System check (Windows 10 or 11)**
+- **Check for Cisco Packet Tracer installation**
+- **Check for administrator privileges**
 
 ## Prerequisites
-Before running the project, make sure you have the following installed:
-
-- [Windows 10/11](https://www.microsoft.com/windows/)
-- [Any Cisco Packet Tracer](https://www.computernetworkingnotes.com/ccna-study-guide/download-packet-tracer-for-windows-and-linux.html)
-- Windows Firewall - Enabled
+None. The file automatically checks whether Windows 10 or Windows 11 is installed, and whether Cisco Packet Tracer is installed (in any location—default or custom). If it does not find Cisco Packet Tracer, it will not allow the bypass process to continue.
 
 ## Usage
-- Make sure the prerequisites are installed.
 - Launch the .bat.
-- Follow the prompt, 1 to enable, 2 to disable.
+- Follow the prompt, 0 to exit, 1 to enable, 2 to disable.
 - Start Cisco Packet Tracer.
 - Enjoy no login.
 
 ## Contributing
+- [**Tecnologica-Mente**](https://github.com/Tecnologica-Mente) - *Fork Developer*
+
 Contributions are welcome! To contribute to this project, please follow these steps:
 
 1. Fork the repository.
