@@ -1,22 +1,23 @@
 @echo off
 setlocal EnableExtensions
-title PTLoginBypassPlus
+title PTLoginBypass
 
 :: ==========================================
-:: RILEVAMENTO LINGUA WINDOWS
-:: ==========================================
-
-set "UI_LANG=EN"
+:: WINDOWS LANGUAGE DETECTION
 
 for /f "delims=" %%L in ('powershell -NoProfile -Command "(Get-UICulture).TwoLetterISOLanguageName"') do (
     if /i "%%L"=="it" (
         set "UI_LANG=IT"
+    ) else if /i "%%L"=="fr" (
+        set "UI_LANG=FR"
+    ) else (
+        set "UI_LANG=EN"
     )
 )
 
+
 :: ==========================================
-:: MESSAGGI ITALIANO / INGLESE
-:: ==========================================
+:: LOCALIZED MESSAGES
 
 if "%UI_LANG%"=="IT" (
 
@@ -24,14 +25,12 @@ if "%UI_LANG%"=="IT" (
     set "MSG_UNSUPPORTED=Sistema operativo non supportato."
     set "MSG_REQUIRED=E' richiesto Windows 10 o Windows 11."
 
-    set "MSG_NOT_INSTALLED=Cisco Packet Tracer non risulta installato."
-    set "MSG_CANNOT_PROCEED=Impossibile procedere."
     set "MSG_PATH_NOT_FOUND=Installazione rilevata, ma eseguibile non individuato."
-    set "MSG_VERIFY_PATH=Verificare il percorso di installazione."
+    set "MSG_VERIFY_PATH=Verificare l'installazione di vostro Cisco Packet Tracer."
 
     set "MSG_ADMIN=Richiesta dei privilegi di amministratore..."
 
-    set "MSG_SHORTCUT=Collegamento a Packet Tracer non trovato."
+    set "MSG_EXE_PATH=Percorso dell'eseguibile :"
 
     set "MSG_SELECT=Seleziona un'opzione:"
     set "MSG_CHOICE=Scelta"
@@ -48,9 +47,37 @@ if "%UI_LANG%"=="IT" (
 
     set "MSG_INVALID=Scelta non valida. Inserire 0, 1 oppure 2."
 
-    set "MSG_CLOSING=Chiusura di PTLoginBypassPlus..."
+    set "MSG_CLOSING=Chiusura di PTLoginBypass..."
 
-    set "MSG_OPERATION_UNAVAILABLE=Operazione non implementata in questa versione."
+) else if "%UI_LANG%"=="FR" (
+    
+    set "MSG_ERROR=ERREUR"
+    set "MSG_UNSUPPORTED=Systeme d'exploitation non pris en charge."
+    set "MSG_REQUIRED=Windows 10 ou Windows 11 est requis."
+
+    set "MSG_PATH_NOT_FOUND=Installation detectee, mais executable introuvable."
+    set "MSG_VERIFY_PATH=Veuillez verifier l'installation de votre Cisco Packet Tracer."
+
+    set "MSG_ADMIN=Demande des privileges administrateur..."
+
+    set "MSG_EXE_PATH=Chemin de l'executable :"
+
+    set "MSG_SELECT=Selectionnez une option :"
+    set "MSG_CHOICE=Choix"
+
+    set "MSG_ENABLE=Activer le bypass de connexion"
+    set "MSG_REMOVE=Supprimer le bypass de connexion"
+    set "MSG_EXIT=Quitter"
+
+    set "MSG_ACTIVATION=Activation du bypass..."
+    set "MSG_ACTIVATED=Bypass active pour Cisco Packet Tracer."
+
+    set "MSG_REMOVAL=Suppression du bypass..."
+    set "MSG_REMOVED=Bypass supprime pour Cisco Packet Tracer."
+
+    set "MSG_INVALID=Choix invalide. Veuillez entrer 0, 1 ou 2."
+
+    set "MSG_CLOSING=Fermeture de PTLoginBypass..."
 
 ) else (
 
@@ -58,14 +85,12 @@ if "%UI_LANG%"=="IT" (
     set "MSG_UNSUPPORTED=Unsupported operating system."
     set "MSG_REQUIRED=Windows 10 or Windows 11 is required."
 
-    set "MSG_NOT_INSTALLED=Cisco Packet Tracer is not installed."
-    set "MSG_CANNOT_PROCEED=Unable to proceed."
     set "MSG_PATH_NOT_FOUND=Installation detected, but executable not found."
-    set "MSG_VERIFY_PATH=Please verify the installation path."
+    set "MSG_VERIFY_PATH=Please verify the installation of your Cisco Packet Tracer."
 
     set "MSG_ADMIN=Requesting administrator privileges..."
 
-    set "MSG_SHORTCUT=Packet Tracer shortcut not found."
+    set "MSG_EXE_PATH=Executable path:"
 
     set "MSG_SELECT=Select an option:"
     set "MSG_CHOICE=Choice"
@@ -82,21 +107,29 @@ if "%UI_LANG%"=="IT" (
 
     set "MSG_INVALID=Invalid choice. Please enter 0, 1 or 2."
 
-    set "MSG_CLOSING=Closing PTLoginBypassPlus..."
-
-    set "MSG_OPERATION_UNAVAILABLE=Operation not implemented in this version."
-
+    set "MSG_CLOSING=Closing PTLoginBypass..."
 )
 
-:: ==========================================
-:: CONTROLLO SISTEMA OPERATIVO
-:: ==========================================
 
-for /f "tokens=4-5 delims=. " %%a in ('ver') do (
+:: ==========================================
+:: ADMINISTRATOR PRIVILEGES CHECK
+
+net session >nul 2>&1
+if %errorLevel% NEQ 0 (
+    echo %MSG_ADMIN%
+    powershell -NoProfile -Command "Start-Process '%~f0' -Verb RunAs"
+    exit /b
+)
+
+
+:: ==========================================
+:: OPERATING SYSTEM CHECK
+
+for /f "tokens=6-7 delims=. " %%a in ('ver') do (
     set "WINVER=%%a"
 )
 
-if not "%WINVER%"=="10" if not "%WINVER%"=="11" (
+if not "%WINVER%" geq "10240" (
     echo.
     echo [%MSG_ERROR%] %MSG_UNSUPPORTED%
     echo %MSG_REQUIRED%
@@ -104,43 +137,18 @@ if not "%WINVER%"=="10" if not "%WINVER%"=="11" (
     exit /b 1
 )
 
+
 :: ==========================================
-:: CONTROLLO INSTALLAZIONE PACKET TRACER
-:: ==========================================
+:: PACKET TRACER INSTALLATION CHECK
 
 set "PT_PATH="
-set "PT_FOUND=0"
 
-for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2^>nul ^| findstr /i "Packet Tracer"') do (
-    set "PT_FOUND=1"
+for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall" /s /v InstallLocation 2^>nul ^| findstr /i "Packet Tracer"') do (
+    set "PT_PATH=%%B"
 )
 
-for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v DisplayName 2^>nul ^| findstr /i "Packet Tracer"') do (
-    set "PT_FOUND=1"
-)
-
-if exist "%ProgramFiles%\Cisco Packet Tracer\bin\PacketTracer.exe" (
-    set "PT_PATH=%ProgramFiles%\Cisco Packet Tracer\bin\PacketTracer.exe"
-)
-
-if exist "%ProgramFiles(x86)%\Cisco Packet Tracer\bin\PacketTracer.exe" (
-    set "PT_PATH=%ProgramFiles(x86)%\Cisco Packet Tracer\bin\PacketTracer.exe"
-)
-
-:: RICERCA INSTALLAZIONI PERSONALIZZATE
-
-for /f "usebackq delims=" %%P in (`powershell.exe -NoLogo -NoProfile -NonInteractive -Command "$ErrorActionPreference='SilentlyContinue'; $roots=@('HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall','HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall','HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall'); $found=@(); foreach($root in $roots){ foreach($key in (Get-ChildItem -LiteralPath $root -ErrorAction SilentlyContinue)){ try { $item=Get-ItemProperty -LiteralPath $key.PSPath -ErrorAction Stop; if($item.DisplayName -match 'Packet\s*Tracer'){ $paths=@(); if($item.InstallLocation){ $paths+=($item.InstallLocation.Trim().Trim('""')) }; if($item.DisplayIcon){ $icon=$item.DisplayIcon -replace ',\s*-?\d+$',''; $paths+=($icon.Trim().Trim('""')) }; foreach($p in $paths){ if(Test-Path -LiteralPath $p -PathType Leaf){ if((Split-Path -Leaf $p) -ieq 'PacketTracer.exe'){ $found+=$p } }; if(Test-Path -LiteralPath $p -PathType Container){ foreach($f in @((Join-Path $p 'PacketTracer.exe'),(Join-Path $p 'bin\PacketTracer.exe'))){ if(Test-Path -LiteralPath $f -PathType Leaf){ $found+=$f } } } } } } catch {} } }; $found | Sort-Object -Unique | Select-Object -First 1"`) do (
-    if not defined PT_PATH set "PT_PATH=%%P"
-)
-
-set "PT_PATH=%PT_PATH%"
-
-if "%PT_FOUND%"=="0" if not defined PT_PATH (
-    echo.
-    echo [%MSG_ERROR%] %MSG_NOT_INSTALLED%
-    echo %MSG_CANNOT_PROCEED%
-    pause
-    exit /b 1
+for /f "tokens=2,*" %%A in ('reg query "HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall" /s /v InstallLocation 2^>nul ^| findstr /i "Packet Tracer"') do (
+    set "PT_PATH=%%B"
 )
 
 if not defined PT_PATH (
@@ -149,62 +157,20 @@ if not defined PT_PATH (
     echo %MSG_VERIFY_PATH%
     pause
     exit /b 1
+) else (
+    set "FinalTargetPath=%PT_PATH%bin\PacketTracer.exe"
 )
 
-:: ==========================================
-:: CONTROLLO PRIVILEGI AMMINISTRATORE
-:: ==========================================
-
-net session >nul 2>&1
-
-if %errorLevel% NEQ 0 (
-    echo %MSG_ADMIN%
-    powershell -NoProfile -Command "Start-Process '%~f0' -Verb RunAs"
-    exit /b
-)
 
 :: ==========================================
-:: IMPOSTAZIONI DEI PERCORSI
-:: ==========================================
-
-:start
-
-set "app_name=ByPass Cisco Packet Tracer Login"
-
-set "ShortcutPath1=%ProgramData%\Microsoft\Windows\Start Menu\Programs\Cisco Packet Tracer\Cisco Packet Tracer.lnk"
-
-set "ShortcutPath2=%APPDATA%\Microsoft\Windows\Start Menu\Programs\Cisco Packet Tracer\Cisco Packet Tracer.lnk"
-
-set "FinalTargetPath="
-
-if exist "%ShortcutPath1%" (
-    for /f "delims=" %%i in ('powershell -NoProfile -Command "(New-Object -ComObject WScript.Shell).CreateShortcut('%ShortcutPath1%').TargetPath"') do set "FinalTargetPath=%%i"
-)
-
-if not defined FinalTargetPath if exist "%ShortcutPath2%" (
-    for /f "delims=" %%i in ('powershell -NoProfile -Command "(New-Object -ComObject WScript.Shell).CreateShortcut('%ShortcutPath2%').TargetPath"') do set "FinalTargetPath=%%i"
-)
-
-if not defined FinalTargetPath (
-    echo.
-    echo [%MSG_ERROR%] %MSG_SHORTCUT%
-    pause
-    exit /b 1
-)
-
-:: ==========================================
-:: MENU PRINCIPALE
-:: ==========================================
-
 :MENU
-
 cls
 echo ==========================================
-echo       PTLoginBypassPlus
+echo      Cisco Packet Tracer Login Bypass
 echo ==========================================
 echo.
-echo Cisco Packet Tracer:
-echo %PT_PATH%
+echo %MSG_EXE_PATH%
+echo %FinalTargetPath%
 echo.
 echo %MSG_SELECT%
 echo.
@@ -219,9 +185,9 @@ set /p "choice=%MSG_CHOICE%: "
 if "%choice%"=="0" (
     goto EXIT
 ) else if "%choice%"=="1" (
-    goto ENABLE
+    goto ENABLE_BYPASS
 ) else if "%choice%"=="2" (
-    goto REMOVE
+    goto REMOVE_BYPASS
 ) else (
     cls
     echo [%MSG_ERROR%] %MSG_INVALID%
@@ -230,44 +196,33 @@ if "%choice%"=="0" (
     goto MENU
 )
 
-:: ==========================================
-:: ATTIVAZIONE BYPASS
-:: ==========================================
 
-:ENABLE
-
+:: ==========================================
+:ENABLE_BYPASS
 echo.
 echo %MSG_ACTIVATION%
 
-powershell -NoProfile -Command "New-NetFirewallRule -DisplayName '%app_name%' -Program '%FinalTargetPath%' -Action Block -Direction Outbound -ErrorAction SilentlyContinue"
+powershell -NoProfile -Command "New-NetFirewallRule -DisplayName 'ByPass Cisco Packet Tracer Login' -Program '%FinalTargetPath%' -Action Block -Direction Outbound"
 echo %MSG_ACTIVATED%
-
 echo.
 pause
 goto MENU
 
-:: ==========================================
-:: RIMOZIONE BYPASS
-:: ==========================================
 
-:REMOVE
-
+:: ==========================================
+:REMOVE_BYPASS
 echo.
 echo %MSG_REMOVAL%
 
-powershell -NoProfile -Command "Remove-NetFirewallRule -DisplayName '%app_name%' -ErrorAction SilentlyContinue"
+powershell -NoProfile -Command "Remove-NetFirewallRule -DisplayName 'ByPass Cisco Packet Tracer Login'"
 echo %MSG_REMOVED%
-
 echo.
 pause
 goto MENU
 
-:: ==========================================
-:: USCITA
-:: ==========================================
 
+:: ==========================================
 :EXIT
-
 echo.
 echo %MSG_CLOSING%
 timeout /t 2 >nul

@@ -1,22 +1,25 @@
 # Cisco Packet Tracer - LoginBypass
 ## Description
-A simple batch file for bypassing the login prompt of Cisco Packet Tracer. <br>
+A simple batch file for bypassing the login prompt of Cisco Packet Tracer.
+
 I've used a stupid method that consist to add an outbound firewall rule to block the Cisco Packet Tracer internet communication... <br>
 Packed in a little batch file for easy uses. 
 
 ## Features
-- **Login Bypass**: Bypass the login prompt.
-- **On/Off**: Simply enable and disable the Bypass.
-- **Admin-Request**: Auto-Elevated demand if not launch as adminsitrator.
-- **User/Computer install**: Handle User/Computer installation of packet tracer.
-- **Support multi version**: Work on different version of CPT _(Tested on v8.2.2, v9.0.0)_
-- **Automatic Windows language detection (English/Italian)**
-- **Automatic Operating System check (Windows 10 or 11)**
-- **Check for Cisco Packet Tracer installation**
-- **Check for administrator privileges**
+- **Login Bypass :** Bypass the login prompt.
+- **On/Off :** Simply enable and disable the Bypass.
+- **Admin-Request :** Auto-Elevated demand if not launch as adminsitrator.
+- **Automatic check :** Automatically find Cisco Packet Tracer installation path.
+- **Support multi version :** Work on different version of Cisco Packet Tracer _(Tested on v8.2.2, v9.0.0)_.
+- **Localized strings :** Automatic Windows language detection (English/Italian/French)
+- **OS Detection :** Automatic Operating System check (Windows 10 or 11)
 
 ## Prerequisites
-None. The file automatically checks whether Windows 10 or Windows 11 is installed, and whether Cisco Packet Tracer is installed (in any location—default or custom). If it does not find Cisco Packet Tracer, it will not allow the bypass process to continue.
+- [Windows 10/11](https://www.microsoft.com/windows/)
+- **Any Cisco Packet Tracer :** [Official](https://www.netacad.com/packet-tracer-download) / [Archives](https://www.computernetworkingnotes.com/ccna-study-guide/download-packet-tracer-for-windows-and-linux.html)
+- Windows Firewall : Enabled
+
+The file automatically checks for Windows 10 or 11 and if Cisco Packet Tracer is installed. If it does not find Cisco Packet Tracer or find a older version of Windows, it will not allow the bypass process to continue.
 
 ## Usage
 - Launch the .bat.
